@@ -1,0 +1,211 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 26 15% 92%;
+    --foreground: 20 12% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 20 12% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 12% 15%;
+
+    --primary: 26 30% 32%;
+    --primary-foreground: 30 20% 96%;
+
+    --secondary: 30 20% 94%;
+    --secondary-foreground: 26 30% 32%;
+
+    --muted: 30 10% 90%;
+    --muted-foreground: 25 5% 35%;
+
+    --accent: 24 25% 90%;
+    --accent-foreground: 26 30% 32%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 30 20% 96%;
+
+    --border: 20 15% 80%;
+    --input: 20 15% 80%;
+    --ring: 26 30% 32%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 95%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .reading-mode {
+    --background: 25 25% 88%;
+    --foreground: 20 15% 15%;
+    --primary: 26 30% 28%;
+    --muted: 30 15% 85%;
+    --accent: 24 20% 85%;
+  }
+
+  .dark {
+    --background: 20 15% 12%;
+    --foreground: 30 10% 92%;
+    --card: 20 15% 15%;
+    --card-foreground: 30 10% 92%;
+    --popover: 20 15% 15%;
+    --popover-foreground: 30 10% 92%;
+    --primary: 30 20% 70%;
+    --primary-foreground: 20 15% 12%;
+    --secondary: 20 15% 20%;
+    --secondary-foreground: 30 10% 92%;
+    --muted: 20 15% 25%;
+    --muted-foreground: 30 10% 70%;
+    --accent: 20 15% 20%;
+    --accent-foreground: 30 10% 92%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 30 10% 92%;
+    --border: 20 15% 25%;
+    --input: 20 15% 25%;
+    --ring: 30 20% 70%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans transition-colors duration-200;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .prose {
+    @apply max-w-none leading-relaxed;
+  }
+  
+  .prose p {
+    @apply my-4;
+  }
+  
+  .prose h1 {
+    @apply text-3xl sm:text-4xl font-bold mt-8 mb-4 font-serif;
+  }
+  
+  .prose h2 {
+    @apply text-2xl sm:text-3xl font-bold mt-6 mb-3 font-serif;
+  }
+  
+  .prose h3 {
+    @apply text-xl sm:text-2xl font-bold mt-5 mb-2 font-serif;
+  }
+  
+  .prose ul, .prose ol {
+    @apply my-4 pl-6;
+  }
+  
+  .prose ul {
+    @apply list-disc;
+  }
+  
+  .prose ol {
+    @apply list-decimal;
+  }
+  
+  .prose blockquote {
+    @apply pl-4 border-l-4 border-coffee-400 italic my-6;
+  }
+
+  /* Dark mode prose improvements */
+  .dark .prose {
+    @apply text-white/90;
+  }
+  
+  .dark .prose h1,
+  .dark .prose h2,
+  .dark .prose h3,
+  .dark .prose h4,
+  .dark .prose h5,
+  .dark .prose h6 {
+    @apply text-white/95;
+  }
+  
+  .dark .prose strong {
+    @apply text-white/90;
+  }
+  
+  .dark .prose a {
+    @apply text-coffee-300 hover:text-coffee-200;
+  }
+  
+  .dark .prose blockquote {
+    @apply border-coffee-600 text-white/80;
+  }
+  
+  .container-content {
+    @apply max-w-4xl mx-auto px-4 sm:px-6;
+  }
+  
+  .hero-section {
+    @apply py-16 md:py-24 bg-gradient-to-br from-coffee-100 to-coffee-200 dark:from-coffee-900/80 dark:to-coffee-800/70;
+  }
+
+  /* Decorative elements */
+  .historical-border {
+    @apply relative before:absolute before:inset-0 before:border-2 before:border-coffee-300 dark:before:border-coffee-700 before:rounded-lg before:-m-1 before:z-0;
+  }
+
+  .parchment-bg {
+    @apply relative;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+  }
+
+  .dark .parchment-bg {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23FFFFFF' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+  }
+
+  /* Pergament decorations */
+  .pergament-decoration {
+    @apply pointer-events-none opacity-40 dark:opacity-15;
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  .pergament-decoration-1 {
+    top: 0;
+    left: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23A98B6A' d='M0 0C30 15 70 15 100 0L100 100C70 85 30 85 0 100L0 0Z'/%3E%3C/svg%3E");
+  }
+
+  .pergament-decoration-2 {
+    top: 0;
+    right: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23A98B6A' d='M0 0C30 15 70 15 100 0L100 100C70 85 30 85 0 100L0 0Z' transform='rotate(90, 50, 50)'/%3E%3C/svg%3E");
+  }
+
+  .pergament-decoration-3 {
+    bottom: 0;
+    left: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23A98B6A' d='M0 0C30 15 70 15 100 0L100 100C70 85 30 85 0 100L0 0Z' transform='rotate(270, 50, 50)'/%3E%3C/svg%3E");
+  }
+
+  .pergament-decoration-4 {
+    bottom: 0;
+    right: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23A98B6A' d='M0 0C30 15 70 15 100 0L100 100C70 85 30 85 0 100L0 0Z' transform='rotate(180, 50, 50)'/%3E%3C/svg%3E");
+  }
+}
