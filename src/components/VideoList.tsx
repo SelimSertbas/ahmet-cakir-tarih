@@ -1,69 +1,64 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from './ui/button';
 import { toast } from './ui/use-toast';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
-import { Trash2, Eye } from 'lucide-react';
+import { Trash2, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Loading } from './ui/loading';
 import { Video } from '@/types';
 
+const PAGE_SIZE = 10;
+
 export const VideoList: React.FC = () => {
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('videos')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-
-        if (data) {
-          setVideos(data.map(video => ({
-            ...video,
-            video_id: video.id,
-            status: video.status as "draft" | "published"
-          })));
-        }
-      } catch (error) {
-        console.error('Error fetching videos:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchVideos();
-  }, []);
-
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Bu videoyu silmek istediğinizden emin misiniz?')) return;
-
-    try {
-      const { error } = await supabase
+  const { data, isLoading } = useQuery({
+    queryKey: ['admin-videos', page],
+    queryFn: async () => {
+      const from = page * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+      const { data, error, count } = await supabase
         .from('videos')
-        .delete()
-        .eq('id', id);
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(from, to);
 
       if (error) throw error;
 
-      toast({
-        title: "Başarılı",
-        description: "Video başarıyla silindi",
-      });
+      return {
+        videos: (data ?? []).map((video) => ({
+          ...video,
+          video_id: video.id,
+          status: video.status as 'draft' | 'published',
+        })) as Video[],
+        count: count ?? 0,
+      };
+    },
+    keepPreviousData: true,
+  });
 
-      // Listeyi yenile
-    } catch (error) {
-      console.error('Error deleting video:', error);
-      toast({
-        title: "Hata",
-        description: "Video silinemedi",
-        variant: "destructive",
-      });
-    }
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('videos').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({ title: 'Başarılı', description: 'Video başarıyla silindi' });
+      queryClient.invalidateQueries({ queryKey: ['admin-videos'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-videos-count'] });
+      queryClient.invalidateQueries({ queryKey: ['videos'] });
+    },
+    onError: () => {
+      toast({ title: 'Hata', description: 'Video silinemedi', variant: 'destructive' });
+    },
+  });
+
+  const handleDelete = (id: string) => {
+    if (!window.confirm('Bu videoyu silmek istediğinizden emin misiniz?')) return;
+    deleteMutation.mutate(id);
   };
 
   const formatDate = (dateString: string) => {
@@ -73,6 +68,10 @@ export const VideoList: React.FC = () => {
   if (isLoading) {
     return <Loading text="Videolar yükleniyor..." />;
   }
+
+  const videos = data?.videos ?? [];
+  const count = data?.count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
 
   if (videos.length === 0) {
     return (
@@ -86,6 +85,7 @@ export const VideoList: React.FC = () => {
 
   return (
     <div className="space-y-4">
+      <p className="text-sm text-coffee-500">{count} video</p>
       <div className="grid gap-4">
         {videos.map((video) => (
           <div
@@ -126,6 +126,30 @@ export const VideoList: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 pt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page === 0}
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" /> Önceki
+          </Button>
+          <span className="text-sm text-coffee-600">
+            Sayfa {page + 1} / {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page + 1 >= totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+          >
+            Sonraki <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
+        </div>
+      )}
     </div>
   );
-}; 
+};

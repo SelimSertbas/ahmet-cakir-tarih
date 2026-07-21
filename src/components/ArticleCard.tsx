@@ -10,16 +10,18 @@ interface ArticleCardProps {
   category: string;
   image?: string;
   type: string;
+  views?: number;
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ 
-  id, 
-  title, 
-  excerpt, 
-  date, 
+const ArticleCard: React.FC<ArticleCardProps> = ({
+  id,
+  title,
+  excerpt,
+  date,
   category,
   image,
-  type
+  type,
+  views
 }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -55,6 +57,12 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
             <span>{date}</span>
             <span className="mx-2">•</span>
             <span>{category}</span>
+            {typeof views === 'number' && (
+              <>
+                <span className="mx-2">•</span>
+                <span>{views} okunma</span>
+              </>
+            )}
           </div>
           <h3 className="font-serif text-xl font-medium text-coffee-800 dark:text-coffee-200 mb-2">{title}</h3>
           <p className="text-coffee-600 dark:text-coffee-300 line-clamp-3">{excerpt}</p>

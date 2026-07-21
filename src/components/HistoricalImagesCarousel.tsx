@@ -31,11 +31,13 @@ export const HistoricalImagesCarousel = ({ images }: HistoricalImagesCarouselPro
           {images.map((image, index) => (
             <CarouselItem key={index}>
               <div className="relative">
-                <img 
+                <img
                   src={image.src}
                   alt="Tarihten Kareler"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
                   className="w-full h-auto object-cover rounded-lg shadow-lg"
-                  style={{ maxHeight: '500px' }} 
+                  style={{ maxHeight: '500px' }}
                 />
               </div>
             </CarouselItem>

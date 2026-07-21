@@ -92,39 +92,63 @@
 
 @layer components {
   .prose {
-    @apply max-w-none leading-relaxed;
+    @apply max-w-none text-lg leading-[1.8];
   }
-  
+
   .prose p {
-    @apply my-4;
+    @apply my-5;
   }
-  
+
   .prose h1 {
-    @apply text-3xl sm:text-4xl font-bold mt-8 mb-4 font-serif;
+    @apply text-3xl sm:text-4xl font-bold mt-10 mb-4 font-serif;
   }
-  
+
   .prose h2 {
-    @apply text-2xl sm:text-3xl font-bold mt-6 mb-3 font-serif;
+    @apply text-2xl sm:text-3xl font-bold mt-10 mb-4 font-serif scroll-mt-24;
   }
-  
+
   .prose h3 {
-    @apply text-xl sm:text-2xl font-bold mt-5 mb-2 font-serif;
+    @apply text-xl sm:text-2xl font-bold mt-8 mb-3 font-serif scroll-mt-24;
   }
-  
+
   .prose ul, .prose ol {
-    @apply my-4 pl-6;
+    @apply my-5 pl-6;
   }
-  
+
   .prose ul {
     @apply list-disc;
   }
-  
+
   .prose ol {
     @apply list-decimal;
   }
-  
+
+  .prose li {
+    @apply my-1.5;
+  }
+
   .prose blockquote {
-    @apply pl-4 border-l-4 border-coffee-400 italic my-6;
+    @apply pl-4 border-l-4 border-coffee-400 italic my-6 text-coffee-700;
+  }
+
+  .prose a {
+    @apply text-coffee-700 underline underline-offset-2 decoration-coffee-300 hover:text-coffee-900 hover:decoration-coffee-500 transition-colors;
+  }
+
+  .prose strong {
+    @apply font-semibold text-coffee-900;
+  }
+
+  .prose img {
+    @apply rounded-lg my-8 w-full h-auto;
+  }
+
+  .prose hr {
+    @apply my-10 border-coffee-200;
+  }
+
+  .prose code {
+    @apply bg-coffee-100 text-coffee-800 rounded px-1.5 py-0.5 text-[0.9em];
   }
 
   /* Dark mode prose improvements */
@@ -146,11 +170,19 @@
   }
   
   .dark .prose a {
-    @apply text-coffee-300 hover:text-coffee-200;
+    @apply text-coffee-300 hover:text-coffee-200 decoration-coffee-600 hover:decoration-coffee-400;
   }
-  
+
   .dark .prose blockquote {
     @apply border-coffee-600 text-white/80;
+  }
+
+  .dark .prose code {
+    @apply bg-coffee-800 text-coffee-100;
+  }
+
+  .dark .prose hr {
+    @apply border-coffee-800;
   }
   
   .container-content {

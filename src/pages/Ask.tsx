@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { User, Mail, MessageCircle, Loader2 } from 'lucide-react';
@@ -14,6 +14,7 @@ const COOLDOWN_SECONDS = 180; // 3 dakika
 
 const Ask = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [question, setQuestion] = useState('');
@@ -50,7 +51,11 @@ const Ask = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cooldown > 0) {
-      toast.error(`Yeni bir soru göndermek için lütfen ${cooldown} saniye bekleyin.`);
+      toast({
+        title: "Lütfen bekleyin",
+        description: `Yeni bir soru göndermek için lütfen ${cooldown} saniye bekleyin.`,
+        variant: "destructive",
+      });
       return;
     }
     setIsSubmitting(true);
@@ -72,12 +77,19 @@ const Ask = () => {
 
       localStorage.setItem('lastAskTime', Date.now().toString());
       setCooldown(COOLDOWN_SECONDS);
-      toast.success('Sorunuz başarıyla gönderildi. En kısa sürede yanıtlanacaktır.');
+      toast({
+        title: "Gönderildi",
+        description: "Sorunuz başarıyla gönderildi. En kısa sürede yanıtlanacaktır.",
+      });
       confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
       navigate('/');
     } catch (error) {
       console.error('Error submitting question:', error);
-      toast.error('Sorunuz gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+      toast({
+        title: "Hata",
+        description: "Sorunuz gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }

@@ -1,37 +1,36 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login, isAuthenticated } from '../lib/auth';
+import { login, getSession } from '../lib/auth';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // If user is already logged in, redirect to writer panel
   useEffect(() => {
-    if (isAuthenticated()) {
-      navigate('/writer-panel');
-    }
-  }, [navigate]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    // Simulate network delay
-    setTimeout(() => {
-      const success = login(username, password);
-      if (success) {
+    getSession().then((session) => {
+      if (session) {
         navigate('/writer-panel');
       }
-      setLoading(false);
-    }, 800);
+    });
+  }, [navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const success = await login(email, password);
+    if (success) {
+      navigate('/writer-panel');
+    }
+    setLoading(false);
   };
 
   return (
@@ -46,36 +45,33 @@ const Login: React.FC = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Kullanıcı Adı</Label>
+              <Label htmlFor="email">E-posta</Label>
               <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="username"
                 className="border-coffee-200 focus:border-coffee-400"
               />
             </div>
-            
+
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Şifre</Label>
-                <Button type="button" variant="link" className="text-coffee-600 p-0 h-auto font-normal">
-                  Şifremi Unuttum
-                </Button>
-              </div>
+              <Label htmlFor="password">Şifre</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                autoComplete="current-password"
                 className="border-coffee-200 focus:border-coffee-400"
               />
             </div>
-            
-            <Button 
-              type="submit" 
+
+            <Button
+              type="submit"
               className="w-full bg-coffee-700 hover:bg-coffee-800"
               disabled={loading}
             >
@@ -84,8 +80,8 @@ const Login: React.FC = () => {
           </form>
         </CardContent>
         <CardFooter className="justify-center">
-          <Button 
-            type="button" 
+          <Button
+            type="button"
             variant="outline"
             onClick={() => navigate('/')}
             className="text-coffee-700 border-coffee-200"

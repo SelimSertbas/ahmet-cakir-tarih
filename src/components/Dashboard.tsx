@@ -5,6 +5,13 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 
+const StatValue: React.FC<{ value: number | undefined; className?: string }> = ({ value, className }) => {
+  if (value === undefined) {
+    return <div className={`h-8 w-10 rounded bg-coffee-800/60 animate-pulse ${className ?? ''}`} />;
+  }
+  return <div className={className}>{value}</div>;
+};
+
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   // Dashboard stats (gerçek verilerle)
@@ -65,22 +72,22 @@ export const Dashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-[#18120b] rounded-xl shadow-md hover:shadow-lg p-6 flex flex-col items-center transition-shadow duration-200 text-white border border-coffee-800">
             <FileText className="w-8 h-8 text-white mb-2" />
-            <div className="text-2xl font-bold text-white">{totalArticles ?? '...'}</div>
+            <StatValue value={totalArticles} className="text-2xl font-bold text-white" />
             <div className="text-white">Makale</div>
           </div>
           <div className="bg-[#18120b] rounded-xl shadow-md hover:shadow-lg p-6 flex flex-col items-center transition-shadow duration-200 text-white border border-coffee-800">
             <Video className="w-8 h-8 text-white mb-2" />
-            <div className="text-2xl font-bold text-white">{totalVideos ?? '...'}</div>
+            <StatValue value={totalVideos} className="text-2xl font-bold text-white" />
             <div className="text-white">Video</div>
           </div>
           <div className="bg-[#18120b] rounded-xl shadow-md hover:shadow-lg p-6 flex flex-col items-center transition-shadow duration-200 text-white border border-coffee-800">
             <HelpCircle className="w-8 h-8 text-white mb-2" />
-            <div className="text-2xl font-bold text-white">{totalQuestions ?? '...'}</div>
+            <StatValue value={totalQuestions} className="text-2xl font-bold text-white" />
             <div className="text-white">Soru</div>
           </div>
           <div className="bg-[#18120b] rounded-xl shadow-md hover:shadow-lg p-6 flex flex-col items-center transition-shadow duration-200 text-white border border-coffee-800">
             <Clock className="w-8 h-8 text-yellow-600 dark:text-yellow-300 mb-2" />
-            <div className="text-2xl font-bold text-yellow-700 dark:text-yellow-300">{pendingQuestions ?? '...'}</div>
+            <StatValue value={pendingQuestions} className="text-2xl font-bold text-yellow-700 dark:text-yellow-300" />
             <div className="text-white">Bekleyen Soru</div>
           </div>
         </div>

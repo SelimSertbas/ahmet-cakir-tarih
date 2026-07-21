@@ -76,6 +76,21 @@ const Index: React.FC = () => {
     },
   });
 
+  const { data: mostReadArticles } = useQuery({
+    queryKey: ['most-read-articles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('type', 'article')
+        .order('views', { ascending: false })
+        .limit(3);
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <div className="min-h-screen flex flex-col relative parchment-bg overflow-hidden">
       <Navbar />
@@ -151,8 +166,34 @@ const Index: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* En Çok Okunanlar */}
+        {mostReadArticles && mostReadArticles.length > 0 && (
+          <section className="py-16 bg-coffee-50/60 dark:bg-coffee-950/40">
+            <div className="container-content">
+              <h2 className="text-2xl md:text-3xl font-serif font-bold text-coffee-800 dark:text-coffee-200 mb-8">
+                En Çok Okunanlar
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {mostReadArticles.map(article => (
+                  <ArticleCard
+                    key={article.id}
+                    id={article.id}
+                    title={article.title}
+                    excerpt={article.excerpt}
+                    category={article.category}
+                    type={article.type}
+                    date={new Date(article.published_at).toLocaleDateString('tr-TR')}
+                    image={article.image_url}
+                    views={article.views}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </main>
-      
+
       <Footer />
     </div>
   );

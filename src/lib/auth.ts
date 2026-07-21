@@ -1,73 +1,47 @@
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "../components/ui/use-toast";
+import type { Session } from "@supabase/supabase-js";
 
-// Since we're not connecting to a real backend in this version,
-// we'll use a simple mock authentication
-const MOCK_USERNAME = "ckr";
-const MOCK_PASSWORD = "c1k2r3.";
+export const login = async (
+  email: string,
+  password: string
+): Promise<boolean> => {
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-interface AuthState {
-  isAuthenticated: boolean;
-  username: string | null;
-}
-
-// Check if user is already logged in from localStorage
-const loadAuthState = (): AuthState => {
-  const stored = localStorage.getItem("auth");
-  if (stored) {
-    try {
-      return JSON.parse(stored) as AuthState;
-    } catch {
-      return { isAuthenticated: false, username: null };
-    }
-  }
-  return { isAuthenticated: false, username: null };
-};
-
-// Save auth state to localStorage
-const saveAuthState = (state: AuthState): void => {
-  localStorage.setItem("auth", JSON.stringify(state));
-};
-
-// Clear auth state from localStorage
-const clearAuthState = (): void => {
-  localStorage.removeItem("auth");
-};
-
-// Login function
-export const login = (username: string, password: string): boolean => {
-  if (username === MOCK_USERNAME && password === MOCK_PASSWORD) {
-    const authState = { isAuthenticated: true, username };
-    saveAuthState(authState);
+  if (error) {
     toast({
-      title: "Başarıyla Giriş Yapıldı",
-      description: "Yazar paneline yönlendiriliyorsunuz.",
+      title: "Giriş Başarısız",
+      description: "E-posta veya şifre hatalı.",
+      variant: "destructive",
     });
-    return true;
+    return false;
   }
-  
+
   toast({
-    title: "Giriş Başarısız",
-    description: "Kullanıcı adı veya şifre hatalı.",
-    variant: "destructive",
+    title: "Başarıyla Giriş Yapıldı",
+    description: "Yazar paneline yönlendiriliyorsunuz.",
   });
-  return false;
+  return true;
 };
 
-// Logout function
-export const logout = (): void => {
-  clearAuthState();
+export const logout = async (): Promise<void> => {
+  await supabase.auth.signOut();
   toast({
     title: "Çıkış Yapıldı",
     description: "Başarıyla çıkış yaptınız.",
   });
 };
 
-// Check if user is authenticated
-export const isAuthenticated = (): boolean => {
-  return loadAuthState().isAuthenticated;
+export const getSession = async (): Promise<Session | null> => {
+  const { data } = await supabase.auth.getSession();
+  return data.session;
 };
 
-// Get current user
-export const getCurrentUser = (): string | null => {
-  return loadAuthState().username;
+export const onAuthStateChange = (
+  callback: (session: Session | null) => void
+) => {
+  const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+    callback(session);
+  });
+  return data.subscription;
 };

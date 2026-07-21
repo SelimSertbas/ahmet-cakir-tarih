@@ -62,7 +62,6 @@ export const VideoForm: React.FC<VideoFormProps> = ({ onSave, onSuccess }) => {
       const videoData = {
         title: data.title.trim(),
         video_url: data.video_url.trim(),
-        video_id: videoId,
         type: 'video',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
