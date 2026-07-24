@@ -28,16 +28,17 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
+        // Not: React'e bağımlı kütüphaneleri (quill, radix, react-query, react-router)
+        // isim eşleşmesiyle ayrı chunk'lara zorlamak, React ile aralarında dairesel
+        // modül bağımlılığı oluşturup production build'de "Cannot read properties of
+        // undefined (reading 'Component')" hatasına yol açabiliyor (dev sunucusunda
+        // görünmez, sadece gerçek build çıktısında ortaya çıkar). Sadece React'e
+        // bağımlı OLMAYAN, tamamen bağımsız kütüphaneleri manuel ayırıyoruz;
+        // geri kalanını React.lazy() sınırlarına göre Rollup kendisi ayırıyor.
         manualChunks(id) {
           if (!id.includes('node_modules')) return;
-          if (id.includes('react-quill') || id.includes('/quill/')) return 'editor';
-          if (id.includes('@radix-ui')) return 'radix';
-          if (id.includes('@supabase')) return 'supabase';
-          if (id.includes('@tanstack/react-query')) return 'query';
           if (id.includes('@sentry')) return 'sentry';
           if (id.includes('date-fns')) return 'date-fns';
-          if (id.includes('react-router-dom')) return 'router';
-          if (id.includes('react-dom') || id.includes('/react/') || id.includes('scheduler')) return 'vendor';
         },
       },
     },
